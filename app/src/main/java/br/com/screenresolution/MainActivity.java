@@ -55,13 +55,12 @@ public class MainActivity extends AppCompatActivity {
         TextView tvHWInfo = findViewById(R.id.tvHardwareInfo);
         TextView tvHWConfig = findViewById(R.id.tvHardwareConfig);
         TextView tvBatteryStatus = findViewById(R.id.tvBatteryStatus);
-        TextView tvDataType = findViewById(R.id.tvDataType);
-        TextView tvDeviceInch = findViewById(R.id.tvDeviceInch);
-        TextView tvKernel = findViewById(R.id.tvKernel);
-        TextView tvSDCard = findViewById(R.id.tvSDCard);
+        //TextView tvDataType = findViewById(R.id.tvDataType);
+        //TextView tvDeviceInch = findViewById(R.id.tvDeviceInch);
+        //TextView tvKernel = findViewById(R.id.tvKernel);
+        //TextView tvSDCard = findViewById(R.id.tvSDCard);
         TextView tvIMEIInfo = findViewById(R.id.tvIMEIInfo);
         TextView tvScreenRes = findViewById(R.id.tvScreenRes);
-
 
         tvHWInfo.setText(getHardwareInfo());
 
@@ -70,15 +69,15 @@ public class MainActivity extends AppCompatActivity {
         tvBatteryStatus.setText(getBatteryStatus2(getBaseContext()));
         tvScreenRes.setText(getScreenResolution());
 
-        tvSDCard.setText(getSDCardStatus()+ "\n" + getSDCardFreeSpace3());
+        //tvSDCard.setText(getSDCardStatus()+ "\n" + getSDCardFreeSpace3());
 
-        tvKernel.setText(getKernelVersion());
+        //tvKernel.setText(getKernelVersion());
 
-        tvDataType.setText(getDataType(this));
+        //tvDataType.setText();
 
-        tvDeviceInch.setText(getDeviceInch(this));
+        //tvDeviceInch.setText(getDeviceInch(this));
 
-        tvIMEIInfo.setText(getIMEINumber());
+        tvIMEIInfo.setText(getDataType(this)+ "\n" + getIMEINumber());
 
         //Toast.makeText(getApplicationContext(), "Toolbar Height: " +  toolbar.getHeight(), Toast.LENGTH_LONG).show();
         //Toast.makeText(getApplicationContext(), "Imei: " +  getIMEINumber(), Toast.LENGTH_LONG).show();
@@ -154,16 +153,16 @@ public class MainActivity extends AppCompatActivity {
 
             if (iSIM_Total == 1) {
 
-                IMEI = telephonyManager.getDeviceId();
+                IMEI = "IMEI: " + telephonyManager.getDeviceId();
 
             } else {
-                IMEI = telephonyManager.getDeviceId(1) + "\n" + telephonyManager.getDeviceId(2);
-
+                IMEI = "IMEI 1: " + telephonyManager.getDeviceId(1) + "\n"
+                     + "IMEI 2: " + telephonyManager.getDeviceId(2);
             }
         }
 
 
-        result = "IMEI: " + IMEI + "\n"+
+        result = IMEI + "\n"+
                 "SW Version: " + telephonyManager.getDeviceSoftwareVersion()+ "\n" +
                 "SIM Country: " + telephonyManager.getSimCountryIso() + "\n" +
                 "SIM Operator: " + telephonyManager.getSimOperator() + "\n" +
@@ -215,21 +214,25 @@ public class MainActivity extends AppCompatActivity {
                 "Codename: " + Build.VERSION.CODENAME + "\n";
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            text = text + "Security Path: " + Build.VERSION.SECURITY_PATCH + "\n" +
-                    "BASE OS: " + Build.VERSION.BASE_OS ;
+            text += "Security Path: " + Build.VERSION.SECURITY_PATCH + "\n" +
+                    "BASE OS: " + Build.VERSION.BASE_OS;
         }
+
+        text+= "\n\nKERNEL VERSION: " + getKernelVersion();
+
 
         return text;
     }
 
     public String getHardwareConfiguration() {
 
-        String text = "Configurations: " + getResources().getConfiguration() + "\n" +
-                "Configurations: Density DPI: " + getResources().getConfiguration().densityDpi + "\n" +
-                "Configurations: Describe Contents: " + getResources().getConfiguration().describeContents() + "\n" +
-                "Screen Brightness: " + Settings.System.SCREEN_BRIGHTNESS + "\n" +
-                "Ringtone: " + Settings.System.RINGTONE + "\n" +
-                "Display Service: " + DISPLAY_SERVICE + "\n";
+        String text = "CONFIGURATIONS: " + getResources().getConfiguration() + "\n\n" +
+                "DENSITY DPI: " + getResources().getConfiguration().densityDpi + "\n\n" +
+                "DESCRIBE CONTENTS: " + getResources().getConfiguration().describeContents() + "\n\n" +
+                "SCREEN BRIGHTNESS: " + Settings.System.SCREEN_BRIGHTNESS + "\n\n" +
+                "SCREEN BRIGHTNESS MODE: " + Settings.System.SCREEN_BRIGHTNESS_MODE + "\n\n"+
+                "RINGTONE: " + Settings.System.RINGTONE + "\n\n" +
+                "DISPLAY SERVICE: " + DISPLAY_SERVICE + "\n\n";
 
         return text;
     }
@@ -279,11 +282,11 @@ public class MainActivity extends AppCompatActivity {
 
         float batteryPct = level / (float)scale;
 
-        return "Battery level: " + level + "\n"
-                + "Battery Scale: " + scale
-                + " Is Charging: " + isCharging + "\n"
-                + " usbCharge: " + usbCharge + "\n"
-                + " acCharge: " + acCharge;
+        return "BATTERY LEVEL: " + level + " %\n"
+                + "BATTERY SCALE: " + scale + "\n"
+                + "IS CHARGING: " + isCharging + "\n"
+                + "CHARGING by USB: " + usbCharge + "\n"
+                + "CHARGING by AC Plug: " + acCharge;
     }
 
 
@@ -308,31 +311,24 @@ public class MainActivity extends AppCompatActivity {
         String sPixels = height + "px x " + width + "px";
 
         String sDensity = Integer.toString(density);
+/*
+        String sBrightness = "SCREEN BRIGHTNESS: " + Settings.System.SCREEN_BRIGHTNESS + "\n"
+                + "SCREEN BRIGHTNESS MODE: " + Settings.System.SCREEN_BRIGHTNESS_MODE;
+*/
 
         if (between(density, 1,120))
-            sDensity = sDensity + "Dpi | LDPI (Low Density)";
+            sDensity += "Dpi | LDPI (Low Density)";
         else if (between(density, 121,160))
-            sDensity = sDensity + "Dpi | MDPI (Medium Density)" ;
+            sDensity += "Dpi | MDPI (Medium Density)" ;
         else if (between(density,161,240))
-            sDensity = sDensity + "Dpi | HDPI (High Density)" ;
+            sDensity += "Dpi | HDPI (High Density)" ;
         else if (between(density,241,320))
-            sDensity = sDensity + "Dpi | XHDPI (Extra High Density)" ;
+            sDensity += "Dpi | XHDPI (Extra High Density)" ;
         else if (between(density,321,480))
-            sDensity = sDensity + "Dpi | XXHDPI (Extra Extra High Density)" ;
+            sDensity += "Dpi | XXHDPI (Extra Extra High Density)" ;
         else  if (density > 480)
-            sDensity = sDensity + "Dpi | XXXHDPI (Extra Extra Extra High Density)" ;
+            sDensity += "Dpi | XXXHDPI (Extra Extra Extra High Density)" ;
 
-        // Exibindo o resultado
-    	/*
-    	tvResolution.setText( "" + sPixels);
-    	tvHeight.setText(height+"px / " + width +"px");
-    	//tvWidth.setText(width+"px");
-        tvDensity.setText(sDensity); */
-
-        //textView.setText(height+"px / " + width +"px\n" + sDensity);
-        //textView.setText(sPixels + "\n" + sDensity);
-
-        //Toast.makeText(getApplicationContext(), "width " + fullscreenActivity.getMeasuredWidth()  + " - height " + fullscreenActivity.getMeasuredHeight(), Toast.LENGTH_SHORT).show();
         return  sPixels + "\n" + sDensity;
 
     }
@@ -349,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
 
     public String getKernelVersion() {
 
-        return "Kernel Ver.:" + System.getProperty("os.version");
+        return "Kernel Version:" + System.getProperty("os.version");
 
     }
 
@@ -400,7 +396,7 @@ public class MainActivity extends AppCompatActivity {
         long kiloAvailable = bytesAvailable / 1024; // Available space from SD in KB
         long megaAvailable = bytesAvailable / (1024*1024); // Available space from SD in MB
 
-        return "\nNEW NEW SDCARD in KB: " + megaAvailable;
+        return "\n NEW SDCARD in KB: " + megaAvailable;
     }
 
     public static String getDeviceInch(Context activity) {
@@ -425,7 +421,7 @@ public class MainActivity extends AppCompatActivity {
         switch (tm.getNetworkType()) {
 
             case TelephonyManager.NETWORK_TYPE_1xRTT:
-                type += " Current network is 1xRTT";
+                type += "Current network is 1xRTT";
                 break;
             case TelephonyManager.NETWORK_TYPE_CDMA:
                 type += "Current network is CDMA: Either IS95A or IS95B (2G)";
