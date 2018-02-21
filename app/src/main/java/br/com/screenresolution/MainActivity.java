@@ -9,7 +9,10 @@ import android.content.pm.PackageManager;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StatFs;
 import android.provider.Settings;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -18,6 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,23 +48,39 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinator);
 
         verifyStoragePermissions2(MainActivity.this);
 
-        TextView textView = findViewById(R.id.textView);
+        TextView tvHWInfo = findViewById(R.id.tvHardwareInfo);
+        TextView tvHWConfig = findViewById(R.id.tvHardwareConfig);
+        TextView tvBatteryStatus = findViewById(R.id.tvBatteryStatus);
+        TextView tvDataType = findViewById(R.id.tvDataType);
+        TextView tvDeviceInch = findViewById(R.id.tvDeviceInch);
+        TextView tvKernel = findViewById(R.id.tvKernel);
+        TextView tvSDCard = findViewById(R.id.tvSDCard);
+        TextView tvIMEIInfo = findViewById(R.id.tvIMEIInfo);
+        TextView tvScreenRes = findViewById(R.id.tvScreenRes);
 
 
-        textView.setText(getHardwareInfo()
-                + "\n============================\n"
-                + getHardwareConfiguration()
-                + "\n============================\n"
-                + getBatteryStatus2(getBaseContext())
-                + "\n============================\n"
-                + getScreenResolution()
-                + "\n============================\n"
-                + getIMEINumber());
+        tvHWInfo.setText(getHardwareInfo());
 
-        Toast.makeText(getApplicationContext(), "OS: " +  getKernelVersion(), Toast.LENGTH_LONG).show();
+        tvHWConfig.setText(getHardwareConfiguration());
+
+        tvBatteryStatus.setText(getBatteryStatus2(getBaseContext()));
+        tvScreenRes.setText(getScreenResolution());
+
+        tvSDCard.setText(getSDCardStatus()+ "\n" + getSDCardFreeSpace3());
+
+        tvKernel.setText(getKernelVersion());
+
+        tvDataType.setText(getDataType(this));
+
+        tvDeviceInch.setText(getDeviceInch(this));
+
+        tvIMEIInfo.setText(getIMEINumber());
+
+        //Toast.makeText(getApplicationContext(), "Toolbar Height: " +  toolbar.getHeight(), Toast.LENGTH_LONG).show();
         //Toast.makeText(getApplicationContext(), "Imei: " +  getIMEINumber(), Toast.LENGTH_LONG).show();
 
 
@@ -103,8 +123,8 @@ public class MainActivity extends AppCompatActivity {
             // We don't have permission so prompt the user
             ActivityCompat.requestPermissions(
                     activity,
-                    Utils.PERMISSIONS_READ_PHONE_STATE,
-                    Utils.REQUEST_READ_PHONE_STATE
+                    PERMISSIONS_READ_PHONE_STATE,
+                    REQUEST_READ_PHONE_STATE
             );
         }
     }
@@ -149,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
                 "SIM Operator: " + telephonyManager.getSimOperator() + "\n" +
                 "SIM Operator Name: " + telephonyManager.getSimOperatorName() + "\n" +
                 "SIM State: " + telephonyManager.getSimState() + "\n"+
-                "SIM Serial No: " + telephonyManager.getSimSerialNumber() +"\n\n\n\n\n\n";
+                "SIM Serial No: " + telephonyManager.getSimSerialNumber();
 
 
 
@@ -180,6 +200,7 @@ public class MainActivity extends AppCompatActivity {
                 "MODEL: " + Build.MODEL + "\n" +
                 "ID: " + Build.ID + "\n" +
                 "Manufacturer: " + Build.MANUFACTURER + "\n" +
+                "Product: " + Build.PRODUCT + "\n"+
                 "Brand: " + Build.BRAND + "\n" +
                 "DEVICE: " + Build.DEVICE + "\n" +
                 "Type: " + Build.TYPE + "\n" +
@@ -316,18 +337,162 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public String getScreenResolution_v2(Activity activity){
+
+        return "screenWidth: " + activity.getWindow().getWindowManager().getDefaultDisplay()
+                .getWidth() + "\n screenHeigth: "
+                + activity.getWindow().getWindowManager().getDefaultDisplay()
+                .getHeight();
+
+
+    }
+
     public String getKernelVersion() {
 
-        return System.getProperty("os.version");
-/*
-        try {
-            Runtime.getRuntime().exec("uname -r");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
+        return "Kernel Ver.:" + System.getProperty("os.version");
+
+    }
+
+    public String getSDCardStatus() {
+
+        return "\n SD Card state: " + Environment.getExternalStorageState()
+                + "\n SD Card Used Space: "+ Environment.getExternalStorageDirectory().getUsableSpace();
+
     }
 
 
+    public String getSDCardFreeSpace(){
+
+        // Relevant documentation: http://developer.android.com/reference/android/os/StatFs.html
+
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+        double sdAvailSize = (double)stat.getAvailableBlocks()
+                * (double)stat.getBlockSize();
+        //One binary gigabyte equals 1,073,741,824 bytes.
+        double gigaAvailable = sdAvailSize / 1073741824;
+
+        return  "\n SD Card Free Space: "+ gigaAvailable;
+    }
+
+
+
+    public String getSDCardFreeSpace2(){
+
+        // Relevant documentation: http://developer.android.com/reference/android/os/StatFs.html
+
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+        double sdAvailSize = (double)stat.getAvailableBytes();
+        //One binary gigabyte equals 1,073,741,824 bytes.
+        double gigaAvailable = sdAvailSize / 1073741824;
+
+        return  "\n <b>SD Card Available Bytes:</b> "+ stat.getAvailableBytes()/1024L +
+                "\n SD Card Free Bytes: " + stat.getFreeBytes() /1024L;
+    }
+
+
+    public String getSDCardFreeSpace3(){
+
+        //StatFs stat = new StatFs(System.getenv("SECONDARY_STORAGE"));
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+
+        long bytesAvailable = (long)stat.getBlockSizeLong() * (long)stat.getAvailableBlocksLong();
+
+        long kiloAvailable = bytesAvailable / 1024; // Available space from SD in KB
+        long megaAvailable = bytesAvailable / (1024*1024); // Available space from SD in MB
+
+        return "\nNEW NEW SDCARD in KB: " + megaAvailable;
+    }
+
+    public static String getDeviceInch(Context activity) {
+        try {
+            DisplayMetrics displayMetrics = activity.getResources().getDisplayMetrics();
+
+            float yInches = displayMetrics.heightPixels / displayMetrics.ydpi;
+            float xInches = displayMetrics.widthPixels / displayMetrics.xdpi;
+            double diagonalInches = Math.sqrt(xInches * xInches + yInches * yInches);
+            return String.valueOf(diagonalInches);
+        } catch (Exception e) {
+            return "-1";
+        }
+    }
+
+    public static String getDataType(Context activity) {
+        String type = "Mobile Data: ";
+        TelephonyManager tm = (TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE);
+
+        type += tm.getNetworkType() + " - ";
+
+        switch (tm.getNetworkType()) {
+
+            case TelephonyManager.NETWORK_TYPE_1xRTT:
+                type += " Current network is 1xRTT";
+                break;
+            case TelephonyManager.NETWORK_TYPE_CDMA:
+                type += "Current network is CDMA: Either IS95A or IS95B (2G)";
+                break;
+            case TelephonyManager.NETWORK_TYPE_EDGE:
+                type += "Current network is EDGE (2G)";
+                break;
+            case TelephonyManager.NETWORK_TYPE_EHRPD:
+                type += "Current network is eHRPD";
+                break;
+            case TelephonyManager.NETWORK_TYPE_EVDO_0:
+                type += "Current network is EVDO revision 0";
+                break;
+            case TelephonyManager.NETWORK_TYPE_EVDO_A:
+                type += "Current network is EVDO revision A";
+                break;
+            case TelephonyManager.NETWORK_TYPE_EVDO_B:
+                type += "Current network is EVDO revision B";
+                break;
+            case TelephonyManager.NETWORK_TYPE_GPRS:
+                type += "Current network is GPRS";
+                break;
+
+            case TelephonyManager.NETWORK_TYPE_GSM:
+                type += "Current network is GSM";
+                break;
+            case TelephonyManager.NETWORK_TYPE_HSDPA:
+                type += "Current network is HSDPA (3G)";
+                break;
+            case TelephonyManager.NETWORK_TYPE_HSPA:
+                type += "Current network is HSPA";
+                break;
+            case TelephonyManager.NETWORK_TYPE_HSPAP:
+                type += "Current network is HSPA+ (4G)";
+                break;
+
+            case TelephonyManager.NETWORK_TYPE_HSUPA:
+                type += "Current network is HSUPA";
+                break;
+            case TelephonyManager.NETWORK_TYPE_IDEN:
+                type += "Current network is iDen";
+                break;
+
+            case TelephonyManager.NETWORK_TYPE_IWLAN:
+                type += "Current network is IWLAN";
+                break;
+
+            case TelephonyManager.NETWORK_TYPE_LTE:
+                type += "Current network is LTE";
+                break;
+
+            case TelephonyManager.NETWORK_TYPE_TD_SCDMA:
+
+                type += "Current network is TD_SCDMA";
+                break;
+
+            case TelephonyManager.NETWORK_TYPE_UMTS:
+                type += "Current network is UMTS";
+                break;
+
+            case TelephonyManager.NETWORK_TYPE_UNKNOWN:
+                type += "Network type is unknown";
+                break;
+
+        }
+
+        return type;
+    }
 
 }
