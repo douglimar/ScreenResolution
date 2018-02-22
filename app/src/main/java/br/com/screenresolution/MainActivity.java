@@ -161,7 +161,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-
         result = IMEI + "\n"+
                 "SW VERSION: " + telephonyManager.getDeviceSoftwareVersion()+ "\n" +
                 "SIM COUNTRY: " + telephonyManager.getSimCountryIso() + "\n" +
