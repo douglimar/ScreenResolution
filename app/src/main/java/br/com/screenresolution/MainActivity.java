@@ -163,12 +163,12 @@ public class MainActivity extends AppCompatActivity {
 
 
         result = IMEI + "\n"+
-                "SW Version: " + telephonyManager.getDeviceSoftwareVersion()+ "\n" +
-                "SIM Country: " + telephonyManager.getSimCountryIso() + "\n" +
-                "SIM Operator: " + telephonyManager.getSimOperator() + "\n" +
-                "SIM Operator Name: " + telephonyManager.getSimOperatorName() + "\n" +
-                "SIM State: " + telephonyManager.getSimState() + "\n"+
-                "SIM Serial No: " + telephonyManager.getSimSerialNumber();
+                "SW VERSION: " + telephonyManager.getDeviceSoftwareVersion()+ "\n" +
+                "SIM COUNTRY: " + telephonyManager.getSimCountryIso() + "\n" +
+                "SIM OPERATOR: " + telephonyManager.getSimOperator() + "\n" +
+                "SIM OPERATOR NAME: " + telephonyManager.getSimOperatorName() + "\n" +
+                "SIM STATE: " + telephonyManager.getSimState() + "\n"+
+                "SIM SERIAL No: " + telephonyManager.getSimSerialNumber();
 
 
 
@@ -198,23 +198,23 @@ public class MainActivity extends AppCompatActivity {
         String text ="SERIAL: " + Build.SERIAL + "\n" +
                 "MODEL: " + Build.MODEL + "\n" +
                 "ID: " + Build.ID + "\n" +
-                "Manufacturer: " + Build.MANUFACTURER + "\n" +
-                "Product: " + Build.PRODUCT + "\n"+
-                "Brand: " + Build.BRAND + "\n" +
+                "MANUFACTURER: " + Build.MANUFACTURER + "\n" +
+                "PRODUCT: " + Build.PRODUCT + "\n"+
+                "BRAND: " + Build.BRAND + "\n" +
                 "DEVICE: " + Build.DEVICE + "\n" +
-                "Type: " + Build.TYPE + "\n" +
-                "User: " + Build.USER + "\n" +
+                "TYPE: " + Build.TYPE + "\n" +
+                "USER: " + Build.USER + "\n" +
                 "BASE: " + Build.VERSION_CODES.BASE + "\n" +
                 "INCREMENTAL: " + Build.VERSION.INCREMENTAL + "\n" +
                 "SDK:  " + Build.VERSION.SDK + "\n" +
                 "BOARD: " + Build.BOARD + "\n" +
                 "HOST: " + Build.HOST + "\n" +
                 "FINGERPRINT: " + Build.FINGERPRINT + "\n" +
-                "Version Code: " + Build.VERSION.RELEASE + "\n" +
-                "Codename: " + Build.VERSION.CODENAME + "\n";
+                "VERSION CODE: " + Build.VERSION.RELEASE + "\n" +
+                "CODENAME: " + Build.VERSION.CODENAME + "\n";
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            text += "Security Path: " + Build.VERSION.SECURITY_PATCH + "\n" +
+            text += "SECURITY PATCH: " + Build.VERSION.SECURITY_PATCH + "\n" +
                     "BASE OS: " + Build.VERSION.BASE_OS;
         }
 
@@ -226,13 +226,13 @@ public class MainActivity extends AppCompatActivity {
 
     public String getHardwareConfiguration() {
 
-        String text = "CONFIGURATIONS: " + getResources().getConfiguration() + "\n\n" +
-                "DENSITY DPI: " + getResources().getConfiguration().densityDpi + "\n\n" +
-                "DESCRIBE CONTENTS: " + getResources().getConfiguration().describeContents() + "\n\n" +
-                "SCREEN BRIGHTNESS: " + Settings.System.SCREEN_BRIGHTNESS + "\n\n" +
-                "SCREEN BRIGHTNESS MODE: " + Settings.System.SCREEN_BRIGHTNESS_MODE + "\n\n"+
-                "RINGTONE: " + Settings.System.RINGTONE + "\n\n" +
-                "DISPLAY SERVICE: " + DISPLAY_SERVICE + "\n\n";
+        String text = "CONFIGURATIONS: " + getResources().getConfiguration() + "\n" +
+                "DENSITY DPI: " + getResources().getConfiguration().densityDpi + "\n" +
+                "DESCRIBE CONTENTS: " + getResources().getConfiguration().describeContents() + "\n" +
+                "SCREEN BRIGHTNESS: " + Settings.System.SCREEN_BRIGHTNESS + "\n" +
+                "SCREEN BRIGHTNESS MODE: " + Settings.System.SCREEN_BRIGHTNESS_MODE + "\n"+
+                "RINGTONE: " + Settings.System.RINGTONE + "\n" +
+                "DISPLAY SERVICE: " + DISPLAY_SERVICE + "\n";
 
         return text;
     }
@@ -286,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
                 + "BATTERY SCALE: " + scale + "\n"
                 + "IS CHARGING: " + isCharging + "\n"
                 + "CHARGING by USB: " + usbCharge + "\n"
-                + "CHARGING by AC Plug: " + acCharge;
+                + "CHARGING by AC PLUG: " + acCharge;
     }
 
 
@@ -317,17 +317,17 @@ public class MainActivity extends AppCompatActivity {
 */
 
         if (between(density, 1,120))
-            sDensity += "Dpi | LDPI (Low Density)";
+            sDensity += "DPI | LDPI (Low Density)";
         else if (between(density, 121,160))
-            sDensity += "Dpi | MDPI (Medium Density)" ;
+            sDensity += "DPI | MDPI (Medium Density)" ;
         else if (between(density,161,240))
-            sDensity += "Dpi | HDPI (High Density)" ;
+            sDensity += "DPI | HDPI (High Density)" ;
         else if (between(density,241,320))
-            sDensity += "Dpi | XHDPI (Extra High Density)" ;
+            sDensity += "DPI | XHDPI (Extra High Density)" ;
         else if (between(density,321,480))
-            sDensity += "Dpi | XXHDPI (Extra Extra High Density)" ;
+            sDensity += "DPI | XXHDPI (Extra Extra High Density)" ;
         else  if (density > 480)
-            sDensity += "Dpi | XXXHDPI (Extra Extra Extra High Density)" ;
+            sDensity += "DPI | XXXHDPI (Extra Extra Extra High Density)" ;
 
         return  sPixels + "\n" + sDensity;
 
@@ -345,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
 
     public String getKernelVersion() {
 
-        return "Kernel Version:" + System.getProperty("os.version");
+        return "KERNEL VERSION:" + System.getProperty("os.version");
 
     }
 
@@ -413,7 +413,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static String getDataType(Context activity) {
-        String type = "Mobile Data: ";
+        String type = "MOBILE DATA: ";
         TelephonyManager tm = (TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE);
 
         type += tm.getNetworkType() + " - ";

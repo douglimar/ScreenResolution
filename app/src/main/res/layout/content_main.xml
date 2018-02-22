@@ -59,7 +59,7 @@
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
                         android:text="xxxx"
-                        android:textSize="16sp"
+                        android:textSize="18sp"
                         android:id="@+id/tvScreenRes"
                         android:layout_margin="@dimen/text_margin"/>
 
@@ -131,13 +131,14 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="#bcbcbc"
                 android:orientation="horizontal"
                 android:weightSum="5">
 
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:background="#bcbcbc"
+                    android:background="#7c7b7b"
                     android:src="@drawable/ic_settings_applications_black_24dp"
                     android:layout_weight="1"/>
 
@@ -181,13 +182,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:background="#c9f4f2"
+                android:background="#e9deb6"
                 android:weightSum="5">
 
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:background="#36844f"
+                    android:background="#d48321"
                     android:src="@drawable/ic_battery_24dp"
                     android:layout_weight="1"/>
 
@@ -202,7 +203,7 @@
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
                         android:textSize="18sp"
-                        android:textColor="#36844f"
+                        android:textColor="#843e36"
                         android:text="BATTERY INFO:"
                         android:layout_margin="@dimen/text_margin"/>
 
@@ -232,13 +233,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:background="#ca1919"
+                android:background="#8cc99a"
                 android:weightSum="5">
 
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:background="#FFF"
+                    android:background="#096b20"
                     android:src="@drawable/ic_sim_card_24dp"
                     android:layout_weight="1"/>
 
@@ -253,7 +254,7 @@
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
                         android:textSize="18sp"
-                        android:textColor="@android:color/white"
+                        android:textColor="#096b20"
                         android:text="MOBILE DATA INFO:"
                         android:layout_margin="@dimen/text_margin"/>
 
@@ -263,7 +264,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="4"
                         android:id="@+id/tvIMEIInfo"
-                        android:textColor="@android:color/white"
+                        android:textStyle="bold"
                         android:layout_margin="@dimen/text_margin"/>
 
                 </LinearLayout>
