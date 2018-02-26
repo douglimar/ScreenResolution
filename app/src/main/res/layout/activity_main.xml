@@ -5,8 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:background="#FFF"
-
     tools:context="br.com.screenresolution.MainActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -45,5 +43,7 @@
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
         app:srcCompat="@android:drawable/ic_dialog_email" />
+
+
 
 </android.support.design.widget.CoordinatorLayout>

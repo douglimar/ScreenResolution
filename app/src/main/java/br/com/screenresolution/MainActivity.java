@@ -1,7 +1,9 @@
 package br.com.screenresolution;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -12,49 +14,62 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.provider.Settings;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.IOException;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.firebase.analytics.FirebaseAnalytics;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
+    private int iAvailableRAM;
+    private int iTotalRAM;
+    private int iUsedRAM;
 
     // Storage Permissions
-    public static final int REQUEST_READ_PHONE_STATE = 1;
-    public static final String[] PERMISSIONS_READ_PHONE_STATE = {
+    private static final int REQUEST_READ_PHONE_STATE = 1;
+    private static final String[] PERMISSIONS_READ_PHONE_STATE = {
             Manifest.permission.READ_PHONE_STATE
     };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinator);
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         verifyStoragePermissions2(MainActivity.this);
 
         TextView tvHWInfo = findViewById(R.id.tvHardwareInfo);
         TextView tvHWConfig = findViewById(R.id.tvHardwareConfig);
         TextView tvBatteryStatus = findViewById(R.id.tvBatteryStatus);
+        TextView tvRAMMemoryInfo = findViewById(R.id.tvRAMInfo);
         //TextView tvDataType = findViewById(R.id.tvDataType);
         //TextView tvDeviceInch = findViewById(R.id.tvDeviceInch);
         //TextView tvKernel = findViewById(R.id.tvKernel);
@@ -62,12 +77,17 @@ public class MainActivity extends AppCompatActivity {
         TextView tvIMEIInfo = findViewById(R.id.tvIMEIInfo);
         TextView tvScreenRes = findViewById(R.id.tvScreenRes);
 
-        tvHWInfo.setText(getHardwareInfo());
+        tvScreenRes.setText(getScreenResolution());
+        //tvScreenRes.setText(getScreenResolution() + "\n\n" + getRAMInfoNewGraph());
+
+
+        tvHWInfo.setText(getHardwareInfo().concat("\n" + getStorageInfoFeb25()));
 
         tvHWConfig.setText(getHardwareConfiguration());
 
         tvBatteryStatus.setText(getBatteryStatus2(getBaseContext()));
-        tvScreenRes.setText(getScreenResolution());
+
+        tvRAMMemoryInfo.setText(getRAMInfo_WithGraph());
 
         //tvSDCard.setText(getSDCardStatus()+ "\n" + getSDCardFreeSpace3());
 
@@ -77,13 +97,20 @@ public class MainActivity extends AppCompatActivity {
 
         //tvDeviceInch.setText(getDeviceInch(this));
 
-        tvIMEIInfo.setText(getDataType(this)+ "\n" + getIMEINumber());
+        tvIMEIInfo.setText(getDataType(this).concat("\n" + getIMEINumber()));
 
         //Toast.makeText(getApplicationContext(), "Toolbar Height: " +  toolbar.getHeight(), Toast.LENGTH_LONG).show();
         //Toast.makeText(getApplicationContext(), "Imei: " +  getIMEINumber(), Toast.LENGTH_LONG).show();
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "2");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Screen2");
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
+
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,6 +118,24 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        // Create a AdView
+        // Load Advertisement Banner
+        AdView adView1 = findViewById(R.id.adViewHwInfo1);
+        AdRequest adRequest1 = new AdRequest.Builder().build();
+        adView1.loadAd(adRequest1);
+
+        // Create a AdView
+        // Load Advertisement Banner
+        AdView adView2 = findViewById(R.id.adViewHwInfo2);
+        AdRequest adRequest2 = new AdRequest.Builder().build();
+        adView2.loadAd(adRequest2);
+
+        // Create a AdView
+        // Load Advertisement Banner
+        AdView adView3 = findViewById(R.id.adViewHwInfo3);
+        AdRequest adRequest3 = new AdRequest.Builder().build();
+        adView3.loadAd(adRequest3);
     }
 
     @Override
@@ -130,8 +175,9 @@ public class MainActivity extends AppCompatActivity {
 
     // Utility Methods
 
-    public String getIMEINumber()  {
-        String result = "";
+    @SuppressLint("HardwareIds")
+    private String getIMEINumber()  {
+        String result;
 
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
@@ -149,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
         String IMEI = "";
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            assert telephonyManager != null;
             int iSIM_Total = telephonyManager.getPhoneCount();
 
             if (iSIM_Total == 1) {
@@ -161,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        assert telephonyManager != null;
         result = IMEI + "\n"+
                 "SW VERSION: " + telephonyManager.getDeviceSoftwareVersion()+ "\n" +
                 "SIM COUNTRY: " + telephonyManager.getSimCountryIso() + "\n" +
@@ -192,73 +240,47 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public String getHardwareInfo() {
+    private String getHardwareInfo() {
 
-        String text ="SERIAL: " + Build.SERIAL + "\n" +
-                "MODEL: " + Build.MODEL + "\n" +
-                "ID: " + Build.ID + "\n" +
-                "MANUFACTURER: " + Build.MANUFACTURER + "\n" +
-                "PRODUCT: " + Build.PRODUCT + "\n"+
-                "BRAND: " + Build.BRAND + "\n" +
-                "DEVICE: " + Build.DEVICE + "\n" +
-                "TYPE: " + Build.TYPE + "\n" +
-                "USER: " + Build.USER + "\n" +
-                "BASE: " + Build.VERSION_CODES.BASE + "\n" +
-                "INCREMENTAL: " + Build.VERSION.INCREMENTAL + "\n" +
-                "SDK:  " + Build.VERSION.SDK + "\n" +
-                "BOARD: " + Build.BOARD + "\n" +
-                "HOST: " + Build.HOST + "\n" +
-                "FINGERPRINT: " + Build.FINGERPRINT + "\n" +
-                "VERSION CODE: " + Build.VERSION.RELEASE + "\n" +
-                "CODENAME: " + Build.VERSION.CODENAME + "\n";
+        @SuppressLint("HardwareIds") String text =getString(R.string.Serial) + Build.SERIAL + "\n" +
+                getString(R.string.model) + Build.MODEL + "\n" +
+                getString(R.string.id) + Build.ID + "\n" +
+                getString(R.string.Manufacturer) + Build.MANUFACTURER + "\n" +
+                getString(R.string.Product) + Build.PRODUCT + "\n"+
+                getString(R.string.brand) + Build.BRAND + "\n" +
+                getString(R.string.device) + Build.DEVICE + "\n" +
+                getString(R.string.type) + Build.TYPE + "\n" +
+                getString(R.string.user) + Build.USER + "\n" +
+                getString(R.string.base) + Build.VERSION_CODES.BASE + "\n" +
+                getString(R.string.incremental) + Build.VERSION.INCREMENTAL + "\n" +
+                getString(R.string.sdk) + Build.VERSION.SDK + "\n" +
+                getString(R.string.board) + Build.BOARD + "\n" +
+                getString(R.string.host) + Build.HOST + "\n" +
+                getString(R.string.fingerprint) + Build.FINGERPRINT + "\n" +
+                getString(R.string.version_code) + Build.VERSION.RELEASE + "\n" +
+                getString(R.string.codename) + Build.VERSION.CODENAME + "\n";
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            text += "SECURITY PATCH: " + Build.VERSION.SECURITY_PATCH + "\n" +
-                    "BASE OS: " + Build.VERSION.BASE_OS;
+            text += getString(R.string.securith_patch) + Build.VERSION.SECURITY_PATCH + "\n" +
+                    getString(R.string.base_os) + Build.VERSION.BASE_OS;
         }
 
-        text+= "\n\nKERNEL VERSION: " + getKernelVersion();
+        text+= "\n" + getKernelVersion();
 
 
         return text;
     }
 
-    public String getHardwareConfiguration() {
+    private String getHardwareConfiguration() {
 
-        String text = "CONFIGURATIONS: " + getResources().getConfiguration() + "\n" +
-                "DENSITY DPI: " + getResources().getConfiguration().densityDpi + "\n" +
-                "DESCRIBE CONTENTS: " + getResources().getConfiguration().describeContents() + "\n" +
-                "SCREEN BRIGHTNESS: " + Settings.System.SCREEN_BRIGHTNESS + "\n" +
-                "SCREEN BRIGHTNESS MODE: " + Settings.System.SCREEN_BRIGHTNESS_MODE + "\n"+
-                "RINGTONE: " + Settings.System.RINGTONE + "\n" +
-                "DISPLAY SERVICE: " + DISPLAY_SERVICE + "\n";
-
-        return text;
+        return getString(R.string.configurations) + getResources().getConfiguration() + "\n" +
+               getString(R.string.density_dpi) + getResources().getConfiguration().densityDpi + "\n" +
+               getString(R.string.describe_contents) + getResources().getConfiguration().describeContents() + "\n" +
+               getString(R.string.screen_brightness) + Settings.System.SCREEN_BRIGHTNESS + "\n" +
+               getString(R.string.SCREEN_BRIGHTNESS_MODE) + Settings.System.SCREEN_BRIGHTNESS_MODE + "\n"+
+               getString(R.string.RINGTONE) + Settings.System.RINGTONE + "\n" +
+               getString(R.string.DISPLAY_SERVICE) + DISPLAY_SERVICE + "\n";
     }
-
-
-    private void getBatteryStatus(Context context) {
-
-        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        Intent batteryStatus = context.registerReceiver(null, ifilter);
-
-        // Are we charging / charged?
-        int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-        boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
-                status == BatteryManager.BATTERY_STATUS_FULL;
-
-        // How are we charging?
-        int chargePlug = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
-        boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
-        boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
-
-
-        int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-        int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-
-        float batteryPct = level / (float)scale;
-    }
-
 
     private String getBatteryStatus2(Context context) {
 
@@ -266,38 +288,53 @@ public class MainActivity extends AppCompatActivity {
         Intent batteryStatus = context.registerReceiver(null, ifilter);
 
         // Are we charging / charged?
+        assert batteryStatus != null;
         int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
         boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
                 status == BatteryManager.BATTERY_STATUS_FULL;
+
+        String sCharging, sUSB_Charge, sAC_Charge;
+
+        if (isCharging)
+            sCharging = getResources().getString(R.string.strCharging);
+        else
+            sCharging = getResources().getString(R.string.strDischarging);
 
         // How are we charging?
         int chargePlug = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
         boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
         boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
 
+        if (usbCharge)
+            sUSB_Charge = getResources().getString(R.string.yes);
+        else
+            sUSB_Charge = getResources().getString(R.string.no);
+
+        if (acCharge)
+            sAC_Charge = getResources().getString(R.string.yes);
+        else
+            sAC_Charge = getResources().getString(R.string.no);
+
 
         int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
 
-        float batteryPct = level / (float)scale;
+        //float batteryPct = level / (float)scale;
 
-        return "BATTERY LEVEL: " + level + " %\n"
-                + "BATTERY SCALE: " + scale + "\n"
-                + "IS CHARGING: " + isCharging + "\n"
-                + "CHARGING by USB: " + usbCharge + "\n"
-                + "CHARGING by AC PLUG: " + acCharge;
+        return getString(R.string.Battery_Level_Label) + level + "%\n"
+                //+ getString(R.string.Battery_Scale_Label) + scale + "\n"
+                + getString(R.string.IsCharging_Label) + sCharging + "\n"
+                + getString(R.string.ChargingByUSB_Label) + sUSB_Charge + "\n"
+                + getString(R.string.ChargingByAC_Label) + sAC_Charge;
     }
 
 
-    public static boolean between(int i, int minValueInclusive, int maxValueInclusive) {
-        if (i >= minValueInclusive && i <= maxValueInclusive)
-            return true;
-        else
-            return false;
+    private static boolean between(int i, int minValueInclusive, int maxValueInclusive) {
+        return i >= minValueInclusive && i <= maxValueInclusive;
     }
 
 
-    public String getScreenResolution() {
+    private String getScreenResolution() {
 
         // Acessnando e manipulando as informacoes da Tela do dispositivo
         DisplayMetrics dm = new DisplayMetrics();
@@ -316,105 +353,333 @@ public class MainActivity extends AppCompatActivity {
 */
 
         if (between(density, 1,120))
-            sDensity += "DPI | LDPI (Low Density)";
+            sDensity += getString(R.string.dpi_LowDensity);
         else if (between(density, 121,160))
-            sDensity += "DPI | MDPI (Medium Density)" ;
+            sDensity += getString(R.string.dpi_mediumDensity) ;
         else if (between(density,161,240))
-            sDensity += "DPI | HDPI (High Density)" ;
+            sDensity += getString(R.string.dpi_highDensity) ;
         else if (between(density,241,320))
-            sDensity += "DPI | XHDPI (Extra High Density)" ;
+            sDensity += getString(R.string.dpi_extra_high_density) ;
         else if (between(density,321,480))
-            sDensity += "DPI | XXHDPI (Extra Extra High Density)" ;
+            sDensity += getString(R.string.dpi_extra_extra_high_density) ;
         else  if (density > 480)
-            sDensity += "DPI | XXXHDPI (Extra Extra Extra High Density)" ;
+            sDensity += getString(R.string.dpi_extra_extra_extra_high_density) ;
 
         return  sPixels + "\n" + sDensity;
 
     }
 
-    public String getScreenResolution_v2(Activity activity){
-
-        return "screenWidth: " + activity.getWindow().getWindowManager().getDefaultDisplay()
-                .getWidth() + "\n screenHeigth: "
-                + activity.getWindow().getWindowManager().getDefaultDisplay()
-                .getHeight();
-
-
-    }
-
-    public String getKernelVersion() {
+    private String getKernelVersion() {
 
         return "KERNEL VERSION:" + System.getProperty("os.version");
 
     }
 
-    public String getSDCardStatus() {
+    /*
+    public String getRAMInfo() {
 
-        return "\n SD Card state: " + Environment.getExternalStorageState()
-                + "\n SD Card Used Space: "+ Environment.getExternalStorageDirectory().getUsableSpace();
 
+        iUsedRAM = getUsedRAM2();
+
+        GraphView graph = (GraphView) findViewById(R.id.graph);
+        BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[] {
+                new DataPoint(0, 0),
+                new DataPoint(0, iTotalRAM),
+                new DataPoint(1, iAvailableRAM),
+                new DataPoint(2, iUsedRAM),
+                new DataPoint(3, 0),
+        }) ;
+        graph.addSeries(series);
+
+        // styling
+
+        series.setValueDependentColor(new ValueDependentColor<DataPoint>() {
+            @Override
+            public int get(DataPoint data) {
+                //return Color.rgb((int) data.getX()*255/4, (int) Math.abs(data.getY()*255/6), 100);
+                return Color.rgb((int) data.getX()*255/4, (int) Math.abs(data.getY()*255/6), 100);
+            }
+        });
+
+        series.setSpacing(5);
+
+        series.setTitle("Total of RAM");
+
+// draw values on top
+        series.setDrawValuesOnTop(true);
+        series.setValuesOnTopColor(Color.RED);
+
+
+        return getTotalRAMInfo() + "\n" + getAvailableRAMInfo() + "\n" + "RAM Used Memory: " + getUsedRAM2();
+    }
+*/
+
+    private String getRAMInfo_WithGraph() {
+
+        BarChart chart = findViewById(R.id.chart);
+
+        //MP Graph
+        BarData data = new BarData(getXAxisMemValues(), getDataSet());
+        chart.setData(data);
+        chart.setDescription(getString(R.string.RAM_Memory_Info));
+        chart.animateXY(2000, 2000);
+        chart.invalidate();
+
+        iUsedRAM = getUsedRAM2();
+
+        return getTotalRAMInfo() + "\n" + getAvailableRAMInfo() + "\n" + getUsedRAM();
     }
 
 
-    public String getSDCardFreeSpace(){
 
-        // Relevant documentation: http://developer.android.com/reference/android/os/StatFs.html
+    private ArrayList<BarDataSet> getDataSet() {
 
-        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
-        double sdAvailSize = (double)stat.getAvailableBlocks()
-                * (double)stat.getBlockSize();
-        //One binary gigabyte equals 1,073,741,824 bytes.
-        double gigaAvailable = sdAvailSize / 1073741824;
+        getTotalRAMInfo();
+        getAvailableRAMInfo();
+        getUsedRAM2();
 
-        return  "\n SD Card Free Space: "+ gigaAvailable;
+        ArrayList<BarDataSet> dataSets;
+
+        ArrayList<BarEntry> valueSet1 = new ArrayList<>();
+        BarEntry v1e1 = new BarEntry(iTotalRAM, 0); // total Mem
+        valueSet1.add(v1e1);
+        BarEntry v1e2 = new BarEntry(iUsedRAM, 1); // Used Mem
+        valueSet1.add(v1e2);
+        BarEntry v1e3 = new BarEntry(iAvailableRAM, 2); // Avail. Mem
+        valueSet1.add(v1e3);
+
+        BarDataSet barDataSet1 = new BarDataSet(valueSet1, getString(R.string.Label));
+        //barDataSet1.setColor(Color.rgb(0, 155, 0));
+
+        barDataSet1.setColors(ColorTemplate.COLORFUL_COLORS);
+
+
+        //BarDataSet barDataSet2 = new BarDataSet(valueSet2, "Brand 2");
+        //barDataSet2.setColors(ColorTemplate.COLORFUL_COLORS);
+
+        dataSets = new ArrayList<>();
+        dataSets.add(barDataSet1);
+        //dataSets.add(barDataSet2);
+        return dataSets;
+    }
+
+    private ArrayList<String> getXAxisMemValues() {
+        ArrayList<String> xAxis = new ArrayList<>();
+        xAxis.add(getString(R.string.RAM_Total));
+        xAxis.add(getString(R.string.RAM_Use));
+        xAxis.add(getString(R.string.RAM_Avl));
+        return xAxis;
     }
 
 
+    private String getUsedRAM(){
 
-    public String getSDCardFreeSpace2(){
+        String sReturnValue;
+        DecimalFormat twoDecimalForm = new DecimalFormat("#.##");
 
-        // Relevant documentation: http://developer.android.com/reference/android/os/StatFs.html
+        iUsedRAM = (iTotalRAM - iAvailableRAM) * 1024;
 
-        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
-        double sdAvailSize = (double)stat.getAvailableBytes();
-        //One binary gigabyte equals 1,073,741,824 bytes.
-        double gigaAvailable = sdAvailSize / 1073741824;
+        double mb = iUsedRAM / 1024.0;
+        double gb = iUsedRAM / 1048576.0;
+        //double tb = iUsedRAM / 1073741824.0;
 
-        return  "\n <b>SD Card Available Bytes:</b> "+ stat.getAvailableBytes()/1024L +
-                "\n SD Card Free Bytes: " + stat.getFreeBytes() /1024L;
-    }
+        //iUsedRAM = (int) mb;
 
-
-    public String getSDCardFreeSpace3(){
-
-        //StatFs stat = new StatFs(System.getenv("SECONDARY_STORAGE"));
-        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
-
-        long bytesAvailable = (long)stat.getBlockSizeLong() * (long)stat.getAvailableBlocksLong();
-
-        long kiloAvailable = bytesAvailable / 1024; // Available space from SD in KB
-        long megaAvailable = bytesAvailable / (1024*1024); // Available space from SD in MB
-
-        return "\n NEW SDCARD in KB: " + megaAvailable;
-    }
-
-    public static String getDeviceInch(Context activity) {
-        try {
-            DisplayMetrics displayMetrics = activity.getResources().getDisplayMetrics();
-
-            float yInches = displayMetrics.heightPixels / displayMetrics.ydpi;
-            float xInches = displayMetrics.widthPixels / displayMetrics.xdpi;
-            double diagonalInches = Math.sqrt(xInches * xInches + yInches * yInches);
-            return String.valueOf(diagonalInches);
-        } catch (Exception e) {
-            return "-1";
+        if (gb > 1) {
+            sReturnValue = twoDecimalForm.format(gb).concat(" GB");
+        } else if (mb > 1) {
+            sReturnValue = twoDecimalForm.format(mb).concat(" MB");
+        } else {
+            sReturnValue = twoDecimalForm.format(iUsedRAM).concat(" KB");
         }
+
+        return getString(R.string.RAM_Used_Memory).concat(sReturnValue);
+
     }
 
-    public static String getDataType(Context activity) {
+
+
+    private int getUsedRAM2(){
+
+        iUsedRAM = iTotalRAM - iAvailableRAM;
+
+        return  iUsedRAM;
+    }
+
+    private String getAvailableRAMInfo() {
+
+
+        String sReturnValue;
+        DecimalFormat twoDecimalForm = new DecimalFormat("#.##");
+
+        ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
+        ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        assert activityManager != null;
+        activityManager.getMemoryInfo(mi);
+
+        double availableRAM = mi.availMem;
+
+        //double mb = availableRAM / 1024.0;
+        double mb = availableRAM / 1048576.0;
+        double gb = availableRAM / 1073741824.0;
+
+        iAvailableRAM = (int) mb;
+
+        if (gb > 1) {
+            sReturnValue = twoDecimalForm.format(gb).concat(" GB");
+        } else if (mb > 1) {
+            sReturnValue = twoDecimalForm.format(mb).concat(" MB");
+        } else {
+            sReturnValue = twoDecimalForm.format(availableRAM).concat(" KB");
+        }
+
+        return getString(R.string.RAM_Avl_Memory) + sReturnValue;
+    }
+
+
+    private String getTotalRAMInfo() {
+
+        String sReturnValue;
+        DecimalFormat twoDecimalForm = new DecimalFormat("#.##");
+
+        ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
+        ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        assert activityManager != null;
+        activityManager.getMemoryInfo(mi);
+
+        double totalRAM = mi.totalMem;
+
+        //totalRAM = Double.parseDouble(value);
+        // totRam = totRam / 1024;
+
+        //double kb = totalRAM / 1024.0;
+        double mb = totalRAM / 1048576.0;
+        double gb = totalRAM / 1073741824.0;
+
+        iTotalRAM = (int) mb;
+
+        if (gb > 1) {
+            sReturnValue = twoDecimalForm.format(gb).concat(" GB");
+        } else if (mb > 1) {
+            sReturnValue = twoDecimalForm.format(mb).concat(" MB");
+        } else {
+            sReturnValue = twoDecimalForm.format(totalRAM).concat(" KB");
+        }
+
+        return getString(R.string.RAM_total_Memory) + sReturnValue;
+
+    }
+
+    private int getTotalRAMInfo2() {
+
+        ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
+        ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        assert activityManager != null;
+        activityManager.getMemoryInfo(mi);
+
+        double totalRAM = mi.totalMem;
+
+        //totalRAM = Double.parseDouble(value);
+        // totRam = totRam / 1024;
+
+        //double kb = totalRAM / 1024.0;
+        double mb = totalRAM / 1048576.0;
+        //double gb = totalRAM / 1073741824.0;
+
+        iTotalRAM = (int) mb;
+
+        return iTotalRAM;
+
+    }
+
+    /*
+    public String getMemInfoFeb25() {
+
+        DecimalFormat twoDecimalForm = new DecimalFormat("#.##");
+
+
+        ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
+        ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        activityManager.getMemoryInfo(mi);
+
+        double availableMegs = mi.availMem / 1048576L;
+        double totalMemory = mi.totalMem / 1073741824.0; //1048576.0; //1048576L;
+
+        String totalMemoryFormatted = twoDecimalForm.format(totalMemory).concat(" GB");
+        String availableMegsFormatted = twoDecimalForm.format(availableMegs).concat(" MB");
+
+
+        return "MEM Info (Available): " + availableMegsFormatted + "\n" + "MEM INfo (TOTAL MEM): " + totalMemoryFormatted
+                + "\n RAM IN MEM Info" + getTotalRAMInMemInfo();
+    }
+*/
+
+    /*
+    public String getTotalRAMInMemInfo() {
+
+        RandomAccessFile reader = null;
+        String load = null;
+        DecimalFormat twoDecimalForm = new DecimalFormat("#.##");
+        double totRam = 0;
+        String lastValue = "";
+        try {
+            reader = new RandomAccessFile("/proc/meminfo", "r");
+            load = reader.readLine();
+
+            // Get the Number value from the string
+            Pattern p = Pattern.compile("(\\d+)");
+            Matcher m = p.matcher(load);
+            String value = "";
+            while (m.find()) {
+                value = m.group(1);
+                // System.out.println("Ram : " + value);
+            }
+            reader.close();
+
+            totRam = Double.parseDouble(value);
+            // totRam = totRam / 1024;
+
+            double mb = totRam / 1024.0;
+            double gb = totRam / 1048576.0;
+            double tb = totRam / 1073741824.0;
+
+            if (tb > 1) {
+                lastValue = twoDecimalForm.format(tb).concat(" TB");
+            } else if (gb > 1) {
+                lastValue = twoDecimalForm.format(gb).concat(" GB");
+            } else if (mb > 1) {
+                lastValue = twoDecimalForm.format(mb).concat(" MB");
+            } else {
+                lastValue = twoDecimalForm.format(totRam).concat(" KB");
+            }
+
+
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            // Streams.close(reader);
+        }
+
+        return lastValue;
+    }
+*/
+
+    private String getStorageInfoFeb25(){
+
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+        long bytesAvailable = stat.getBlockSizeLong() * stat.getBlockCountLong();
+        long megAvailable = bytesAvailable / 1048576L;
+        double gigaAvailable = bytesAvailable / 1073741824;
+
+        return "Storage Info: " + megAvailable + "MB | " + gigaAvailable + " GB";
+    }
+
+    private static String getDataType(Context activity) {
         String type = "MOBILE DATA: ";
         TelephonyManager tm = (TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE);
 
+        assert tm != null;
         type += tm.getNetworkType() + " - ";
 
         switch (tm.getNetworkType()) {

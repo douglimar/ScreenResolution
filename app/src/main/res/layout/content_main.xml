@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -18,7 +19,11 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+
             app:cardElevation="5dp"
             android:background="@color/cardview_light_background"
             app:cardCornerRadius="5dp">
@@ -27,15 +32,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:background="#58afd1"
+                android:background="#a9dce7"
                 android:weightSum="5">
 
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:background="#4c7b8c"
+                    android:background="#106ea4"
+                    android:padding="5dp"
                     android:src="@drawable/ic_perm_device_information_black_24dp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:contentDescription="Icon" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -49,8 +56,8 @@
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
                         android:textSize="18sp"
-                        android:textColor="@android:color/white"
-                        android:text="SCREEN RESOLUTION:"
+                        android:textColor="#106ea4"
+                        android:text="@string/screen_resolution_label"
                         android:id="@+id/tvScreenResTitle"
                         android:layout_margin="@dimen/text_margin"/>
 
@@ -58,8 +65,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:text="xxxx"
-                        android:textSize="18sp"
+                        android:text="@string/xxxx"
+                        android:textSize="16sp"
                         android:id="@+id/tvScreenRes"
                         android:layout_margin="@dimen/text_margin"/>
 
@@ -74,7 +81,11 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+
             app:cardElevation="5dp"
             android:background="@color/cardview_light_background"
             app:cardCornerRadius="5dp">
@@ -83,15 +94,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:background="#f1dcdc"
+                android:background="#a9dce7"
                 android:weightSum="5">
 
                 <ImageView
                     android:layout_width="0dp"
-                    android:background="#947373"
+                    android:background="#106ea4"
                     android:layout_height="match_parent"
+                    android:padding="5dp"
                     android:src="@drawable/ic_settings_black_24dp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:contentDescription="Icon" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -104,8 +117,8 @@
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
                         android:textSize="18sp"
-                        android:textColor="#947373"
-                        android:text="HARDWARE INFO:"
+                        android:textColor="#106ea4"
+                        android:text="@string/hardware_info"
                         android:layout_margin="@dimen/text_margin"/>
 
                     <TextView
@@ -120,10 +133,23 @@
 
         </android.support.v7.widget.CardView>
 
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adViewHwInfo1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/banner_ad_unit_TESTE"
+            />
+
+
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+
             app:cardElevation="5dp"
             android:background="@color/cardview_light_background"
             app:cardCornerRadius="5dp">
@@ -131,16 +157,18 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#bcbcbc"
+                android:background="#a9dce7"
                 android:orientation="horizontal"
                 android:weightSum="5">
 
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:background="#7c7b7b"
+                    android:background="#106ea4"
+                    android:padding="5dp"
                     android:src="@drawable/ic_settings_applications_black_24dp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:contentDescription="Icon" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -153,17 +181,18 @@
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
                         android:textSize="18sp"
-                        android:textColor="@android:color/black"
-                        android:text="ADDITIONAL CONFIG:"
+                        android:textColor="#106ea4"
+                        android:text="@string/additional_config"
                         android:layout_margin="@dimen/text_margin"/>
 
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
                         android:layout_weight="4"
                         android:textStyle="bold"
                         android:id="@+id/tvHardwareConfig"
-                        android:layout_margin="@dimen/text_margin"/>
+                        android:layout_margin="@dimen/text_margin"
+                        tools:ignore="NestedWeights" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -173,7 +202,10 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             app:cardElevation="5dp"
             android:background="@color/cardview_light_background"
             app:cardCornerRadius="5dp">
@@ -182,15 +214,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:background="#e9deb6"
+                android:background="#a9dce7"
                 android:weightSum="5">
 
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:background="#d48321"
+                    android:background="#106ea4"
+                    android:padding="5dp"
                     android:src="@drawable/ic_battery_24dp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:contentDescription="Icon" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -203,28 +237,42 @@
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
                         android:textSize="18sp"
-                        android:textColor="#843e36"
-                        android:text="BATTERY INFO:"
+                        android:textColor="#106ea4"
+                        android:text="@string/battery_info"
                         android:layout_margin="@dimen/text_margin"/>
 
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
                         android:layout_weight="4"
                         android:textStyle="bold"
                         android:id="@+id/tvBatteryStatus"
-                        android:layout_margin="@dimen/text_margin"/>
+                        android:layout_margin="@dimen/text_margin"
+                        tools:ignore="NestedWeights" />
 
                 </LinearLayout>
             </LinearLayout>
 
         </android.support.v7.widget.CardView>
 
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adViewHwInfo2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/banner_ad_unit_TESTE"
+            />
+
+
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+
             app:cardElevation="5dp"
             android:background="@color/cardview_light_background"
             app:cardCornerRadius="5dp">
@@ -233,15 +281,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:background="#8cc99a"
+                android:background="#a9dce7"
                 android:weightSum="5">
 
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:background="#096b20"
+                    android:background="#106ea4"
+                    android:padding="5dp"
                     android:src="@drawable/ic_sim_card_24dp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:contentDescription="Icon" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -254,18 +304,19 @@
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
                         android:textSize="18sp"
-                        android:textColor="#096b20"
-                        android:text="MOBILE DATA INFO:"
+                        android:textColor="#106ea4"
+                        android:text="@string/mobile_data_info"
                         android:layout_margin="@dimen/text_margin"/>
 
 
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
                         android:layout_weight="4"
                         android:id="@+id/tvIMEIInfo"
                         android:textStyle="bold"
-                        android:layout_margin="@dimen/text_margin"/>
+                        android:layout_margin="@dimen/text_margin"
+                        tools:ignore="NestedWeights" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -273,12 +324,13 @@
         </android.support.v7.widget.CardView>
 
 
-
-<!--
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="15dp"
             app:cardElevation="5dp"
             android:background="@color/cardview_light_background"
             app:cardCornerRadius="5dp">
@@ -287,127 +339,60 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
+                android:background="#a9dce7"
                 android:weightSum="5">
 
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:background="#efbb38"
-                    android:src="@drawable/ic_sd_card_black_24dp"
-                    android:layout_weight="1"/>
+                    android:background="#106ea4"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_memory_24dp"
+                    android:layout_weight="1"
+                    android:contentDescription="Icon" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:id="@+id/tvSDCard"
-                    android:layout_margin="@dimen/text_margin"/>
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_weight="4">
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:textColor="#106ea4"
+                        android:text="@string/ram_memory_info"
+                        android:layout_margin="@dimen/text_margin"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="4"
+                        android:textStyle="bold"
+                        android:id="@+id/tvRAMInfo"
+                        android:layout_margin="@dimen/text_margin"
+                        tools:ignore="NestedWeights" />
+
+                    <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/chart"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"/>
+
+
+                </LinearLayout>
             </LinearLayout>
 
         </android.support.v7.widget.CardView>
 
-        <android.support.v7.widget.CardView
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adViewHwInfo3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            app:cardElevation="5dp"
-            android:background="@color/cardview_light_background"
-            app:cardCornerRadius="5dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:background="#e9e17b"
-                android:weightSum="5">
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:background="#FFF"
-                    android:src="@drawable/ic_battery_24dp"
-                    android:layout_weight="1"/>
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:id="@+id/tvKernel"
-                    android:layout_margin="@dimen/text_margin"/>
-
-            </LinearLayout>
-
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            app:cardElevation="5dp"
-            android:background="@color/cardview_light_background"
-            app:cardCornerRadius="5dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#c91821"
-                android:orientation="horizontal"
-                android:weightSum="5">
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:background="#FFF"
-                    android:src="@drawable/ic_sim_card_24dp"
-                    android:layout_weight="1"/>
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:id="@+id/tvDataType"
-                    android:textColor="@android:color/white"
-                    android:layout_margin="@dimen/text_margin"/>
-
-            </LinearLayout>
-
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            app:cardElevation="5dp"
-            android:background="@color/cardview_light_background"
-            app:cardCornerRadius="5dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:background="#5cb0d1"
-                android:weightSum="5">
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:background="#fff"
-                    android:src="@drawable/ic_device_inch_24dp"
-                    android:layout_weight="1"/>
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:id="@+id/tvDeviceInch"
-                    android:layout_margin="@dimen/text_margin"/>
-
-            </LinearLayout>
-
-        </android.support.v7.widget.CardView>
-
-        -->
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/banner_ad_unit_TESTE"
+            />
 
     </LinearLayout>
 
