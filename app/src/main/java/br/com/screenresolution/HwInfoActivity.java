@@ -39,7 +39,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 
-public class MainActivity extends AppCompatActivity {
+public class HwInfoActivity extends AppCompatActivity {
 
     private FirebaseAnalytics mFirebaseAnalytics;
 
@@ -57,14 +57,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setContentView(R.layout.activity_hwinfo);
+
 
         // Obtain the FirebaseAnalytics instance.
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
-        verifyStoragePermissions2(MainActivity.this);
+        verifyStoragePermissions2(HwInfoActivity.this);
 
         TextView tvHWInfo = findViewById(R.id.tvHardwareInfo);
         TextView tvHWConfig = findViewById(R.id.tvHardwareConfig);
@@ -110,15 +109,6 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         // Create a AdView
         // Load Advertisement Banner
         AdView adView1 = findViewById(R.id.adViewHwInfo1);
@@ -136,28 +126,24 @@ public class MainActivity extends AppCompatActivity {
         AdView adView3 = findViewById(R.id.adViewHwInfo3);
         AdRequest adRequest3 = new AdRequest.Builder().build();
         adView3.loadAd(adRequest3);
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        // add back arrow to toolbar
+        if (getSupportActionBar() != null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        // handle arrow click here
+        if (item.getItemId() == android.R.id.home) {
+            finish(); // close this activity and return to preview activity (if there is any)
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     private static void verifyStoragePermissions2(Activity activity) {
         // Check if we have write permission

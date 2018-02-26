@@ -8,6 +8,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.gms.ads.AdRequest;
@@ -47,7 +48,7 @@ public class Main2Activity extends AppCompatActivity {
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
                 mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), HwInfoActivity.class);
 
                 startActivity(intent);
             }
@@ -58,6 +59,21 @@ public class Main2Activity extends AppCompatActivity {
         AdView adView = findViewById(R.id.adViewMain);
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
+
+        // add back arrow to toolbar
+        if (getSupportActionBar() != null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle arrow click here
+        if (item.getItemId() == android.R.id.home) {
+            finish(); // close this activity and return to preview activity (if there is any)
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 

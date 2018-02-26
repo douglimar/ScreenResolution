@@ -62,5 +62,9 @@
     <string name="banner_ad_unit_TESTE" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
     <string name="screen_resolution_amp_hardware_info"><![CDATA[Screen Resolution & Hardware Info]]></string>
 
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
 
 </resources>
