@@ -40,17 +40,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:background="#a9dce7"
+            android:background="#7c7f80"
             android:weightSum="5">
 
             <ImageView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:background="#106ea4"
+                android:background="#000000"
                 android:padding="5dp"
                 android:src="@drawable/ic_phonelink_24dp"
                 android:layout_weight="1"
-                android:contentDescription="Icon" />
+                android:contentDescription="@string/icon" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -65,7 +65,7 @@
                     android:textSize="18sp"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:textColor="#106ea4"
+                    android:textColor="#ffffff"
                     android:text="@string/collect_hardware_info"
                     android:layout_margin="@dimen/text_margin"/>
 
@@ -80,6 +80,7 @@
         android:id="@+id/adViewMain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         ads:adSize="BANNER"
         ads:adUnitId="@string/banner_ad_unit_TESTE"
         />
