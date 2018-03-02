@@ -147,7 +147,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             ads:adSize="BANNER"
-            ads:adUnitId="@string/banner_ad_unit_TESTE"
+            ads:adUnitId="@string/banner_ad_unit_id"
             />
 
         <!-- HWINFO CARD -->
@@ -269,7 +269,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             ads:adSize="BANNER"
-            ads:adUnitId="@string/banner_ad_unit_TESTE"
+            ads:adUnitId="@string/banner_ad_unit_id"
             />
 
         <!-- BATTERY CARD -->
@@ -394,7 +394,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             ads:adSize="BANNER"
-            ads:adUnitId="@string/banner_ad_unit_TESTE"
+            ads:adUnitId="@string/banner_ad_unit_id"
             />
 
     </LinearLayout>

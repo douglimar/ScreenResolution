@@ -2,11 +2,24 @@
   <dictionary name="douglimar">
     <words>
       <w>acessnando</w>
+      <w>adicionais</w>
+      <w>adview</w>
+      <w>bateria</w>
+      <w>brilho</w>
       <w>cardview</w>
       <w>cdma</w>
+      <w>coletar</w>
+      <w>conteúdo</w>
+      <w>código</w>
+      <w>densidade</w>
       <w>descarregando</w>
+      <w>digitais</w>
+      <w>disp</w>
+      <w>disponível</w>
       <w>dispositivo</w>
       <w>evdo</w>
+      <w>fabricante</w>
+      <w>fcff</w>
       <w>giga</w>
       <w>gprs</w>
       <w>graphview</w>
@@ -14,19 +27,30 @@
       <w>hsdpa</w>
       <w>hspa</w>
       <w>hsupa</w>
+      <w>hwinfo</w>
+      <w>icone</w>
       <w>ifilter</w>
       <w>imei</w>
       <w>informacoes</w>
       <w>iwlan</w>
       <w>jjoe</w>
+      <w>leitor</w>
       <w>manipulando</w>
       <w>meminfo</w>
+      <w>ndpemluilgrlmivab</w>
       <w>phonelink</w>
+      <w>placa</w>
       <w>proc</w>
+      <w>produto</w>
+      <w>resolução</w>
       <w>scdma</w>
       <w>screenresolution</w>
       <w>securith</w>
+      <w>tomada</w>
       <w>umts</w>
+      <w>usuário</w>
+      <w>utilizada</w>
+      <w>versão</w>
       <w>xxxx</w>
       <w>xygrid</w>
     </words>

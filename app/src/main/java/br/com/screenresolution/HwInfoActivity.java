@@ -14,15 +14,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.provider.Settings;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
-import android.view.View;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -40,8 +35,6 @@ import java.util.ArrayList;
 
 
 public class HwInfoActivity extends AppCompatActivity {
-
-    private FirebaseAnalytics mFirebaseAnalytics;
 
     private int iAvailableRAM;
     private int iTotalRAM;
@@ -61,7 +54,7 @@ public class HwInfoActivity extends AppCompatActivity {
 
 
         // Obtain the FirebaseAnalytics instance.
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         verifyStoragePermissions2(HwInfoActivity.this);
 
@@ -196,12 +189,12 @@ public class HwInfoActivity extends AppCompatActivity {
 
         assert telephonyManager != null;
         result = IMEI + "\n"+
-                "SW VERSION: " + telephonyManager.getDeviceSoftwareVersion()+ "\n" +
-                "SIM COUNTRY: " + telephonyManager.getSimCountryIso() + "\n" +
-                "SIM OPERATOR: " + telephonyManager.getSimOperator() + "\n" +
-                "SIM OPERATOR NAME: " + telephonyManager.getSimOperatorName() + "\n" +
-                "SIM STATE: " + telephonyManager.getSimState() + "\n"+
-                "SIM SERIAL No: " + telephonyManager.getSimSerialNumber();
+                getString(R.string.sw_version) + telephonyManager.getDeviceSoftwareVersion()+ "\n" +
+                getString(R.string.sim_country) + telephonyManager.getSimCountryIso() + "\n" +
+                getString(R.string.sim_operator) + telephonyManager.getSimOperator() + "\n" +
+                getString(R.string.sim_operator_name) + telephonyManager.getSimOperatorName() + "\n" +
+                getString(R.string.sim_state) + telephonyManager.getSimState() + "\n"+
+                getString(R.string.sim_serial) + telephonyManager.getSimSerialNumber();
 
 
 
@@ -303,7 +296,6 @@ public class HwInfoActivity extends AppCompatActivity {
 
 
         int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-        int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
 
         //float batteryPct = level / (float)scale;
 
@@ -357,7 +349,7 @@ public class HwInfoActivity extends AppCompatActivity {
 
     private String getKernelVersion() {
 
-        return "KERNEL VERSION:" + System.getProperty("os.version");
+        return getString(R.string.kernel_version) + System.getProperty("os.version");
 
     }
 
@@ -553,28 +545,6 @@ public class HwInfoActivity extends AppCompatActivity {
         }
 
         return getString(R.string.RAM_total_Memory) + sReturnValue;
-
-    }
-
-    private int getTotalRAMInfo2() {
-
-        ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
-        ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-        assert activityManager != null;
-        activityManager.getMemoryInfo(mi);
-
-        double totalRAM = mi.totalMem;
-
-        //totalRAM = Double.parseDouble(value);
-        // totRam = totRam / 1024;
-
-        //double kb = totalRAM / 1024.0;
-        double mb = totalRAM / 1048576.0;
-        //double gb = totalRAM / 1073741824.0;
-
-        iTotalRAM = (int) mb;
-
-        return iTotalRAM;
 
     }
 

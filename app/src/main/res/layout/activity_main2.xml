@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="@drawable/gradient_background"
+    android:background="#a9dce7"
     tools:context="br.com.screenresolution.Main2Activity">
 
     <TextView
@@ -82,7 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         ads:adSize="BANNER"
-        ads:adUnitId="@string/banner_ad_unit_TESTE"
+        ads:adUnitId="@string/banner_ad_unit_id"
         />
 
 </LinearLayout>
