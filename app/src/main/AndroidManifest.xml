@@ -20,6 +20,15 @@
             android:name=".Main2Activity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme">
+
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "http://www.example.com/gizmos” -->
+                <data android:scheme="https" android:host="www.screenresolution.com.br" />
+                <data android:scheme="app" android:host="/screenresolution" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".SplashActivity"

@@ -79,8 +79,8 @@
     <com.google.android.gms.ads.AdView
         android:id="@+id/adViewMain"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="10dp"
         ads:adSize="BANNER"
         ads:adUnitId="@string/banner_ad_unit_id"
         />

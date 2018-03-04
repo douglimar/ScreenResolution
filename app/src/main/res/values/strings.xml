@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Screen Resolution | Hardware Info</string>
+    <string name="app_name">HW Info - Hardware Info e Resolução de Tela</string>
     <string name="strCharging">"Carregando "</string>
     <string name="strDischarging">"Descarregando "</string>
     <string name="yes">"Sim "</string>
@@ -44,7 +44,7 @@
     <string name="battery_info">"INFORMAÇÕES DA BATERIA: "</string>
     <string name="additional_config">"CONFIGURAÇÕES ADICIONAIS: "</string>
 
-    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-1098336821710456/9465531299</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-1098336821710456/7613612749</string>
     <string name="banner_ad_unit_TESTE" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
     <string name="screen_resolution_amp_hardware_info" translatable="false"><![CDATA[Screen Resolution & Hardware Info]]></string>
 
